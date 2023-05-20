@@ -30,6 +30,10 @@ UDPServerSocket.bind((localIP, localPort))
 
 print('UDP Server up and listening! Port: 3030')
 
+bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
+Connections = []
+startHandshake(bytesAddressPair, UDPServerSocket, Connections)
+print(Connections)
 file_info = getRequest()
 print(file_info)
 
