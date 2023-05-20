@@ -1,57 +1,44 @@
 import socket
-
+from API import *
 
 def getRequest():
     """Gets the First Packet and unpacks it
 
-    Args:
-        bytesAddressPair (Array): Has File Info and IP stored as 'Type:<typing> Name:<filename>"
+    Returns:
+        dict: Contains file type and name
     """
     bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
-    print(bytesAddressPair)
-    UDPServerSocket.sendto(b'recieved', bytesAddressPair[1])
-
     
     message = bytesAddressPair[0].decode('utf-8')
-    # for letter in temp:
-    #     message = message + str(letter)
-    # message = message.split(' ')
-    i = 0
-    for info in message:
-        info = info
-        print(info)
-        type[i] = info.split(':')[1]
-        i=i+1    
-    UDPServerSocket.sendto(bytesToSend, address)
-    return type
-
+    info = message.split(' ')
+    file_info = {}
+    for i in info:
+        data = i.split(':')
+        file_info[data[0]] = data[1]
+    UDPServerSocket.sendto('200 OK'.encode('utf-8'), bytesAddressPair[1])
+    return file_info
 
 localIP = 'localhost'
 localPort = 3030
 bufferSize = 1024
 
 msgFromServer = 'Hello UDP Client!'
-bytesToSend = str.encode(msgFromServer)
+bytesToSend = msgFromServer.encode('utf-8')
 
-UDPServerSocket = socket.socket(
-    family=socket.AF_INET,
-    type= socket.SOCK_DGRAM
-)
-
+UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 UDPServerSocket.bind((localIP, localPort))
 
-print('UDP Server up and listening! Port:3030')
+print('UDP Server up and listening! Port: 3030')
 
-print(getRequest())
+file_info = getRequest()
+print(file_info)
 
-while(True):
+while True:
     bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
     message = bytesAddressPair[0]
     address = bytesAddressPair[1]
-    print(bytesAddressPair)
-    clientMsg = "Message from Client:{}".format(message)
-    clientIP  = "Client IP Address:{}".format(address)
+    clientMsg = "Message from Client: {}".format(message.decode('utf-8'))
+    clientIP = "Client IP Address: {}".format(address)
     print(clientMsg)
     print(clientIP)
     UDPServerSocket.sendto(bytesToSend, address)
-    
