@@ -8,17 +8,21 @@ def getRequest():
         bytesAddressPair (Array): Has File Info and IP stored as 'Type:<typing> Name:<filename>"
     """
     bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
-    message = ""
-    temp = bytesAddressPair[0]
-    for letter in temp:
-        message = message + letter
-    message = message.split(' ')
-    type = None
+    print(bytesAddressPair)
+    UDPServerSocket.sendto(b'recieved', bytesAddressPair[1])
+
+    
+    message = bytesAddressPair[0].decode('utf-8')
+    # for letter in temp:
+    #     message = message + str(letter)
+    # message = message.split(' ')
     i = 0
     for info in message:
-        info = info.decode('utf-8')
+        info = info
+        print(info)
         type[i] = info.split(':')[1]
-        i=i+1
+        i=i+1    
+    UDPServerSocket.sendto(bytesToSend, address)
     return type
 
 
